@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Param,
-  Put,
-  NotFoundException,
-} from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, Param } from '@nestjs/common';
 import { UserService } from '../application/user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -16,23 +8,27 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() dto: CreateUserDto) {
-    return this.userService.create(dto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.createUser(
+      createUserDto.name,
+      createUserDto.email,
+    );
   }
 
   @Get(':id')
-  async get(@Param('id') id: string) {
-    const user = await this.userService.findById(id);
-    if (!user) throw new NotFoundException('User not found');
-    return user;
+  async getUser(@Param('id') id: string) {
+    return await this.userService.getUserById(id);
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
-    const user = await this.userService.update(id, dto);
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.userService.updateUser(
+      id,
+      updateUserDto.name,
+      updateUserDto.email,
+    );
   }
 }

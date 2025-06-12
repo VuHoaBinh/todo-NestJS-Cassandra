@@ -1,24 +1,34 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../domain/user.entity';
+import { CassandraService } from 'nestjs-cassandra';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserRepository {
-  private users = new Map<string, User>();
+  constructor(private readonly cassandraService: CassandraService) {}
 
-  async create(user: User): Promise<User> {
-    this.users.set(user.id, user);
-    return user;
+  async createUser(name: string, email: string): Promise<User> {
+    const id = uuid();
+    await this.cassandraService.execute(
+      'INSERT INTO users (id, name, email) VALUES (?, ?, ?)',
+      [id, name, email],
+    );
+    return { id, name, email };
   }
 
-  async findById(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async findUserById(id: string): Promise<User> {
+    const result = await this.cassandraService.execute(
+      'SELECT * FROM users WHERE id = ?',
+      [id],
+    );
+    return result.rows[0] ? result.rows[0] : null;
   }
 
-  async update(id: string, data: Partial<User>): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (!user) return undefined;
-    const updated = { ...user, ...data };
-    this.users.set(id, updated as User);
-    return updated as User;
+  async updateUser(id: string, name: string, email: string): Promise<User> {
+    await this.cassandraService.execute(
+      'UPDATE users SET name = ?, email = ? WHERE id = ?',
+      [name, email, id],
+    );
+    return { id, name, email };
   }
 }

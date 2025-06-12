@@ -30,7 +30,9 @@ export class UserController {
   @Put(':id')
   async update(@Param('id') id: string, @Body() dto: UpdateUserDto) {
     const user = await this.userService.update(id, dto);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
 }

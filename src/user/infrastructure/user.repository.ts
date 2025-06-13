@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../domain/user.entity';
-import { CassandraService } from 'nestjs-cassandra';
+import { CassandraService } from '../application/CassandraService';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -21,7 +21,8 @@ export class UserRepository {
       'SELECT * FROM users WHERE id = ?',
       [id],
     );
-    return result.rows[0] ? result.rows[0] : null;
+    console.log(result);
+    return result[0];
   }
 
   async updateUser(id: string, name: string, email: string): Promise<User> {

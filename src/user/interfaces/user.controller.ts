@@ -20,6 +20,11 @@ export class UserController {
     return await this.userService.getUserById(id);
   }
 
+  @Get()
+  async getUsers() {
+    return await this.userService.getAllUsers();
+  }
+
   @Put(':id')
   async updateUser(
     @Param('id') id: string,

@@ -25,6 +25,10 @@ export class UserRepository {
     return result[0];
   }
 
+  findAllUsers() {
+    return this.cassandraService.execute('SELECT * FROM users');
+  }
+
   async updateUser(id: string, name: string, email: string): Promise<User> {
     await this.cassandraService.execute(
       'UPDATE users SET name = ?, email = ? WHERE id = ?',

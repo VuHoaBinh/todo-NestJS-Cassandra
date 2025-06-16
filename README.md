@@ -57,6 +57,33 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+# Run Cassandra with Docker
+
+This guide explains how to quickly run Apache Cassandra using Docker.
+
+## Prerequisites
+
+- Install Docker:
+
+  - [Docker Installation Guide](https://docs.docker.com/get-docker/)
+
+- (Optional) Install Docker Compose if you want to run with `docker-compose`:
+  - [Docker Compose Installation](https://docs.docker.com/compose/install/)
+
+## Run Cassandra using Docker CLI
+
+### Step 1: Create Cassandra
+
+```bash
+docker run --name cassandra -p 9042:9042 -d cassandra
+```
+
+### Step 2: Work Cassandra
+
+```bash
+docker exec -it cassandra bash
+```
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.

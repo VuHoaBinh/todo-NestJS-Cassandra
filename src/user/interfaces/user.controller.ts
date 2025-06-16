@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Put, Body, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Body,
+  Param,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserService } from '../application/user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,24 +18,15 @@ export class UserController {
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.createUser(
-      createUserDto.name,
+      createUserDto.name ? createUserDto.name : '',
       createUserDto.email,
     );
-    if (!user) {
-      throw new Error('User creation failed');
-    }
     return user;
   }
 
   @Get(':id')
   async getUser(@Param('id') id: string) {
-    const user = await this.userService.getUserById(id);
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    return user;
+    return await this.userService.getUserById(id);
   }
 
   @Get()
@@ -47,7 +46,7 @@ export class UserController {
     );
 
     if (!user) {
-      throw new Error('User update failed');
+      throw new NotFoundException('User update failed');
     }
     return user;
   }
